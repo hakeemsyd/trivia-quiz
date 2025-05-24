@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: trivia-mongo
+    volumes:
+      - trivia-data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
+    container_name: trivia-backend
+    environment:
+      MONGO_URL: mongodb://mongo:27017/trivia
+      NODE_ENV: production
+    ports:
+      - "4000:4000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile
+    container_name: trivia-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  trivia-data:

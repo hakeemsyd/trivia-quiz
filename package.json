@@ -1,0 +1,19 @@
+{
+  "name": "trivia-monorepo",
+  "private": true,
+  "packageManager": "pnpm@8.5.0",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "concurrently -k -n BACKEND,FRONTEND \"pnpm --filter @trivia/backend dev\" \"pnpm --filter @trivia/frontend dev\"",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0",
+    "typescript": "^5.8.3",
+    "eslint": "^8.48.0",
+    "vite": "^6.3.5",
+    "@vitejs/plugin-react-swc": "^3.0.0"
+  }
+}
