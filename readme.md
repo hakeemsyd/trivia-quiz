@@ -2,7 +2,6 @@
 
 This monorepo contains a full-stack Trivia application with three primary packages:
 
-- **shared**: Shared TypeScript types and utilities.
 - **backend**: Express + Apollo GraphQL server with MongoDB.
 - **frontend**: React + Vite + TypeScript SPA.
 
@@ -34,7 +33,6 @@ This monorepo contains a full-stack Trivia application with three primary packag
 ```
 trivia-monorepo/
 ├─ packages/
-│  ├─ shared/        # Shared types & utilities
 │  ├─ backend/       # Express + Apollo GraphQL server
 │  └─ frontend/      # React + Vite SPA
 ├─ package.json      # Root pnpm config & scripts
@@ -54,13 +52,7 @@ trivia-monorepo/
    pnpm install
    ```
 
-2. **Build shared types**
-
-   ```bash
-   pnpm --filter @trivia/shared run build
-   ```
-
-3. **Run development servers**
+2. **Run development servers**
 
    ```bash
    # Backend (GraphQL + Express)
@@ -70,7 +62,7 @@ trivia-monorepo/
    pnpm --filter @trivia/frontend run dev
    ```
 
-4. **Visit**
+3. **Visit**
 
    - Frontend: [http://localhost:3000](http://localhost:3000)
    - GraphQL Playground: [http://localhost:4000/graphql](http://localhost:4000/graphql)
@@ -115,11 +107,6 @@ PORT=4000
 ---
 
 ## Package Details
-
-### shared
-
-- Location: `packages/shared`
-- Responsibilities: Defines the `Question` type used by both frontend and backend.
 
 ### backend
 
