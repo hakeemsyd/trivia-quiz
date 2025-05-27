@@ -2,7 +2,6 @@ import { QuestionModel } from '../models/Question';
 import { CategoryModel } from '../models/Category';
 import type { Question } from '../models/Question';
 
-
 export const resolvers = {
   Query: {
     questions: () => QuestionModel.find().exec(),
@@ -23,7 +22,7 @@ export const resolvers = {
       console.log('Fetched categories from DB:', categories);
       const filtered = categories.filter((cat) => !!cat.name);
 
-      return filtered.map((cat) => ({
+      return filtered.map((cat: any) => ({
         id: cat._id.toString(),
         categoryId: cat.categoryId,
         name: cat.name,
@@ -52,7 +51,7 @@ export const resolvers = {
       const correctAnswers = [];
 
       for (const { questionId, selectedOption } of answers) {
-        const question = questions.find((q) => q._id.toString() === questionId);
+        const question = questions.find((q: any) => q._id.toString() === questionId);
         if (!question) continue;
 
         if (selectedOption === question.answerIndex) {
