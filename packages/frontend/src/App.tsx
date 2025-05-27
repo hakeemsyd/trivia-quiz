@@ -1,5 +1,5 @@
 import './App.css';
-import { QuizMaker } from './Components/HomePage/index';
+import { QuizMaker } from './Components/Quizmaker/index';
 
 function App() {
   return (

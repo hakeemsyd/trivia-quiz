@@ -1,2 +1,4 @@
 export * from './Question';
-export * from './HomePage';
+export * from './Quizmaker';
+export * from './Buttons';
+export * from './DropDownSelect';
