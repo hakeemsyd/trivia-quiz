@@ -94,7 +94,7 @@ const Question = ({ category, difficulty, onBack }: QuestionsProps) => {
                 const selectedOption = selectedAnswers[q.id];
                 const correctOption = getCorrectOption(q.id);
                 const isSelected = selectedOption === idx;
-                const isCorrect = result && correctOption === idx;
+                const isCorrect = correctOption == idx;
                 const isWrongSelected = result && isSelected && correctOption !== idx;
 
                 const baseStyle = 'border px-4 py-2 rounded-md transition focus:outline-none';

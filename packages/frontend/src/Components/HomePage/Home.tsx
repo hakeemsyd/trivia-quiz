@@ -37,36 +37,59 @@ export default function QuizMaker() {
       {error && <p className="text-red-500">Failed to load categories</p>}
 
       <div className="flex items-center border border-gray-300 rounded-md overflow-hidden shadow-sm">
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="h-10 w-60 px-4 text-gray-700 focus:outline-none bg-white appearance-none border-r border-gray-300"
-        >
-          <option value="">Select Category</option>
-          {data?.getCategories.map((cat: { id: string; name: string }) => (
-            <option key={cat.id} value={cat.name}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+        <div className="relative w-60">
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="h-10 w-full px-4 pr-10 text-gray-700 bg-white border border-gray-300 appearance-none focus:outline-none"
+          >
+            <option value="">Select Category</option>
+            {data?.getCategories.map((cat: { id: string; name: string }) => (
+              <option key={cat.id} value={cat.name}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
 
-        <select
-          value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}
-          className="h-10 w-40 px-4 text-gray-700 focus:outline-none bg-white appearance-none border-r border-gray-300"
-        >
-          <option value="">Select Difficulty</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
+            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.29a.75.75 0 01-.02-1.06z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <div className="relative w-40">
+          <select
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value)}
+            className="h-10 w-full px-4 pr-10 text-gray-700 bg-white border border-gray-300 appearance-none focus:outline-none"
+          >
+            <option value="">Select Difficulty</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
+            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.29a.75.75 0 01-.02-1.06z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
 
         <button
           disabled={isButtonDisabled}
           onClick={handleCreateClick}
-          className={`h-10 px-6 text-sm font-medium transition duration-200 ${
-            isButtonDisabled ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'
-          }`}
+          className={`h-10 px-6 text-sm font-medium !rounded-none transition duration-200 
+  ${isButtonDisabled ? '!bg-blue-300 text-white !cursor-not-allowed' : '!bg-blue-600 text-white hover:bg-blue-700'}`}
         >
           Create
         </button>
