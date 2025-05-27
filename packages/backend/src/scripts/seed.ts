@@ -35,6 +35,20 @@ interface CategoryDoc extends Document {
   name: string;
 }
 
+function decodeHtml(html: string): string {
+  const entities: { [key: string]: string } = {
+    '&amp;': '&',
+    '&quot;': '"',
+    '&#039;': "'",
+    '&lt;': '<',
+    '&gt;': '>',
+    '&eacute;': 'é',
+    '&ouml;': 'ö',
+    '&nbsp;': ' ',
+  };
+  return html.replace(/&[a-zA-Z0-9#]+;/g, (match) => entities[match] || match);
+}
+
 async function seedCategories(): Promise<void> {
   const existingCount = await CategoryModel.countDocuments();
   if (existingCount > 0) {
@@ -85,14 +99,17 @@ async function seedQuestions(): Promise<void> {
         }
 
         const formatted = data.results.map((q) => {
-          const allChoices = [...q.incorrect_answers, q.correct_answer];
+          const decodedQuestion = decodeHtml(q.question);
+          const decodedCorrect = decodeHtml(q.correct_answer);
+          const decodedIncorrect = q.incorrect_answers.map(decodeHtml);
+          const allChoices = [...decodedIncorrect, decodedCorrect];
           const shuffled = allChoices.sort(() => 0.5 - Math.random());
           return {
-            text: q.question,
+            text: decodedQuestion,
             difficulty: q.difficulty,
             category: q.category,
             choices: shuffled,
-            answerIndex: shuffled.indexOf(q.correct_answer),
+            answerIndex: shuffled.indexOf(decodedCorrect),
           };
         });
 
@@ -103,7 +120,6 @@ async function seedQuestions(): Promise<void> {
       }
     }
 
-    // Final trimming in case we fetched slightly more than target
     const uniqueQuestions = allQuestions.slice(0, targetAmount);
     await QuestionModel.insertMany(uniqueQuestions);
     console.log(`Inserted ${uniqueQuestions.length} questions`);

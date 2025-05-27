@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_QUESTIONS, SUBMIT_ANSWERS } from '../../graphql/index.gql';
+import PrimaryButton from '../Buttons/PrimaryButton';
 
 interface QuestionsProps {
   category: string;
@@ -84,57 +85,51 @@ const Question = ({ category, difficulty, onBack }: QuestionsProps) => {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-10 text-gray-800">
-      {data.getQuestions.map((q: any) => {
-        return (
-          <div key={q.id}>
-            <p className="text-lg font-medium mb-4 text-left">{q.text}</p>
+      {data.getQuestions.map((q: any) => (
+        <div key={q.id}>
+          <p className="text-lg font-medium mb-4 text-left">{q.text}</p>
 
-            <div className="flex flex-wrap gap-4">
-              {q.choices.map((option: string, idx: number) => {
-                const selectedOption = selectedAnswers[q.id];
-                const correctOption = getCorrectOption(q.id);
-                const isSelected = selectedOption === idx;
-                const isCorrect = correctOption == idx;
-                const isWrongSelected = result && isSelected && correctOption !== idx;
+          <div className="flex flex-wrap gap-4">
+            {q.choices.map((option: string, idx: number) => {
+              const selectedOption = selectedAnswers[q.id];
+              const correctOption = getCorrectOption(q.id);
+              const isSelected = selectedOption === idx;
+              const isCorrect = correctOption === idx;
+              const isWrongSelected = result && isSelected && correctOption !== idx;
 
-                const baseStyle = 'border px-4 py-2 rounded-md transition focus:outline-none';
-                let stateStyle = '!border-green-600 !bg-white !text-green-600 hover:!bg-green-50';
+              const baseStyle = 'border px-4 py-2 rounded-md transition focus:outline-none';
+              let stateStyle = '!border-green-600 !bg-white !text-green-600 hover:!bg-green-50';
 
-                if (result) {
-                  if (isCorrect) {
-                    stateStyle = '!bg-green-600 !text-white !border-green-600 font-semibold';
-                  } else if (isWrongSelected) {
-                    stateStyle = '!bg-red-600 !text-white !border-red-600 font-semibold';
-                  }
-                } else if (isSelected) {
-                  stateStyle = '!border-green-600 !bg-green-600 !text-white font-semibold';
+              if (result) {
+                if (isCorrect) {
+                  stateStyle = '!bg-green-600 !text-white !border-green-600 font-semibold';
+                } else if (isWrongSelected) {
+                  stateStyle = '!bg-red-600 !text-white !border-red-600 font-semibold';
                 }
+              } else if (isSelected) {
+                stateStyle = '!border-green-600 !bg-green-600 !text-white font-semibold';
+              }
 
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => handleOptionClick(q.id, idx)}
-                    className={`${baseStyle} ${stateStyle}`}
-                    disabled={!!result}
-                  >
-                    {option}
-                  </button>
-                );
-              })}
-            </div>
+              return (
+                <button
+                  key={idx}
+                  onClick={() => handleOptionClick(q.id, idx)}
+                  className={`${baseStyle} ${stateStyle}`}
+                  disabled={!!result}
+                >
+                  {option}
+                </button>
+              );
+            })}
           </div>
-        );
-      })}
+        </div>
+      ))}
 
       {isSubmitVisible && !result && (
         <div className="text-center mt-8">
-          <button
-            onClick={handleSubmit}
-            className="!bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition"
-            disabled={submitting}
-          >
+          <PrimaryButton disabled={submitting} onClick={handleSubmit}>
             {submitting ? 'Submitting...' : 'Submit'}
-          </button>
+          </PrimaryButton>
         </div>
       )}
 
