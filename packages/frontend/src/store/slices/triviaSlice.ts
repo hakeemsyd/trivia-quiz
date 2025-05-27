@@ -1,86 +1,96 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import client from '../../../src/client/apolloClient';
+import { SUBMIT_ANSWERS } from '../../graphql/index.gql';
 
-interface Question {
-  id: string;
-  category: string;
-  type: string;
-  difficulty: string;
-  question: string;
-  correct_answer: string;
-  incorrect_answers: string[];
+interface CorrectAnswer {
+  questionId: string;
+  correctOption: number;
+}
+
+interface QuizResult {
+  score: number;
+  total: number;
+  correctAnswers: CorrectAnswer[];
 }
 
 interface TriviaState {
-  questions: Question[];
-  currentQuestionIndex: number;
-  score: number;
-  loading: boolean;
-  error: string | null;
+  selectedCategory: string;
+  selectedDifficulty: string;
+  showQuestions: boolean;
+  selectedAnswers: { [questionId: string]: number };
+  quizResult: QuizResult | null;
+  correctAnswers: CorrectAnswer[];
+  submitting: boolean;
 }
 
 const initialState: TriviaState = {
-  questions: [],
-  currentQuestionIndex: 0,
-  score: 0,
-  loading: false,
-  error: null,
+  selectedCategory: '',
+  selectedDifficulty: '',
+  showQuestions: false,
+  selectedAnswers: {},
+  quizResult: null,
+  correctAnswers: [],
+  submitting: false,
 };
 
-// Example async thunk for fetching questions
-export const fetchQuestions = createAsyncThunk(
-  "trivia/fetchQuestions",
-  async (amount: number = 10) => {
-    // This will be replaced with actual API call
-    const response = await fetch(`/api/questions?amount=${amount}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch questions");
-    }
-    return response.json();
-  }
-);
+export const submitAnswersThunk = createAsyncThunk('trivia/submitAnswers', async (_, { getState }) => {
+  const state = getState() as { trivia: TriviaState };
+  const answers = Object.entries(state.trivia.selectedAnswers).map(([questionId, selectedOption]) => ({
+    questionId,
+    selectedOption,
+  }));
+
+  const { data } = await client.mutate({
+    mutation: SUBMIT_ANSWERS,
+    variables: { answers },
+  });
+
+  return data.submitAnswers;
+});
 
 const triviaSlice = createSlice({
-  name: "trivia",
+  name: 'trivia',
   initialState,
   reducers: {
-    nextQuestion: (state) => {
-      if (state.currentQuestionIndex < state.questions.length - 1) {
-        state.currentQuestionIndex += 1;
-      }
+    setCategory: (state, action: PayloadAction<string>) => {
+      state.selectedCategory = action.payload;
     },
-    answerQuestion: (state, action: PayloadAction<string>) => {
-      const currentQuestion = state.questions[state.currentQuestionIndex];
-      if (action.payload === currentQuestion.correct_answer) {
-        state.score += 1;
-      }
+    setDifficulty: (state, action: PayloadAction<string>) => {
+      state.selectedDifficulty = action.payload;
+    },
+    setShowQuestions: (state, action: PayloadAction<boolean>) => {
+      state.showQuestions = action.payload;
+    },
+    setSelectedAnswer: (state, action: PayloadAction<{ questionId: string; optionIndex: number }>) => {
+      const { questionId, optionIndex } = action.payload;
+      state.selectedAnswers[questionId] = optionIndex;
     },
     resetQuiz: (state) => {
-      state.currentQuestionIndex = 0;
-      state.score = 0;
+      state.selectedAnswers = {};
+      state.quizResult = null;
+      state.correctAnswers = [];
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchQuestions.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+      .addCase(submitAnswersThunk.pending, (state) => {
+        state.submitting = true;
       })
-      .addCase(fetchQuestions.fulfilled, (state, action) => {
-        state.loading = false;
-        state.questions = action.payload;
-        state.currentQuestionIndex = 0;
-        state.score = 0;
+      .addCase(submitAnswersThunk.fulfilled, (state, action) => {
+        state.submitting = false;
+        state.quizResult = {
+          score: action.payload.score,
+          total: action.payload.total,
+          correctAnswers: action.payload.correctAnswers || [],
+        };
+        state.correctAnswers = action.payload.correctAnswers || [];
       })
-      .addCase(fetchQuestions.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to fetch questions";
+      .addCase(submitAnswersThunk.rejected, (state) => {
+        state.submitting = false;
       });
   },
 });
 
-export const { nextQuestion, answerQuestion, resetQuiz } = triviaSlice.actions;
+export const { setCategory, setDifficulty, setShowQuestions, setSelectedAnswer, resetQuiz } = triviaSlice.actions;
 export default triviaSlice.reducer;

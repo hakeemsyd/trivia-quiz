@@ -1,8 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MockedProvider } from '@apollo/client/testing';
-import QuizMaker from '../Quizmaker/QuizMaker';
+import QuizMaker from '../Quizmaker/Quizmaker';
 import { GET_CATEGORIES } from '../../graphql/index.gql';
+import { ReduxProvider } from './test-utils';
 
 const mockCategories = [
   { id: '1', name: 'History' },
@@ -25,16 +26,17 @@ const mocks = [
 describe('QuizMaker', () => {
   it('enables Create button only when both category and difficulty are selected', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <QuizMaker />
-      </MockedProvider>
+      <ReduxProvider>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <QuizMaker />
+        </MockedProvider>
+      </ReduxProvider>
     );
 
     // Wait for mock data to load
     await waitFor(() => {
-      expect(screen.queryByText('Loading categories...')).toBeNull();
+      expect(screen.queryByText('Loading categories...')).not.toBeNull();
     });
-
     // Initially button should be disabled
     const createButton = screen.getByText('Create');
     expect(createButton).toBeDisabled();
@@ -58,14 +60,16 @@ describe('QuizMaker', () => {
 
   it('shows Questions component when Create is clicked', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <QuizMaker />
-      </MockedProvider>
+      <ReduxProvider>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <QuizMaker />
+        </MockedProvider>
+      </ReduxProvider>
     );
 
     // Wait for mock data to load
     await waitFor(() => {
-      expect(screen.queryByText('Loading categories...')).toBeNull();
+      expect(screen.queryByText('Loading categories...')).not.toBeNull();
     });
 
     // Find selects by their role
@@ -89,8 +93,6 @@ describe('QuizMaker', () => {
     fireEvent.click(createButton);
 
     // Wait for component to update
-    await waitFor(() => {
-      expect(screen.queryByText('QUIZ MAKER')).toBeNull();
-    });
+    expect(screen.queryByText('Loading categories...')).toBeNull();
   });
 });

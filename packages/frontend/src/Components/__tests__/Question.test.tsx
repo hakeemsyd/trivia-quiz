@@ -1,8 +1,9 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { describe, it, expect, vi } from 'vitest';
 import Question from '../Question/Question';
 import { GET_QUESTIONS, SUBMIT_ANSWERS } from '../../graphql/index.gql';
+import { ReduxProvider } from './test-utils';
 
 const mockQuestions = {
   getQuestions: [
@@ -50,9 +51,7 @@ const mocks = [
       query: GET_QUESTIONS,
       variables: { category: 'History', difficulty: 'medium' },
     },
-    result: {
-      data: mockQuestions,
-    },
+    result: { data: mockQuestions },
   },
   {
     request: {
@@ -93,18 +92,17 @@ describe('Question Component', () => {
     onBack: mockOnBack,
   };
 
-  // ... other tests remain the same ...
-
   it('displays score and back button after submission', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Question {...defaultProps} />
-      </MockedProvider>
+      <ReduxProvider>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <Question {...defaultProps} />
+        </MockedProvider>
+      </ReduxProvider>
     );
 
-    await waitFor(() => {
-      expect(screen.getByText('Sample question 1?')).toBeDefined();
-    });
+    // Wait for questions to appear
+    await screen.findByText('Sample question 1?');
 
     // Select all 5 answers
     fireEvent.click(screen.getByText('Option A'));
@@ -113,19 +111,17 @@ describe('Question Component', () => {
     fireEvent.click(screen.getByText('Option 5'));
     fireEvent.click(screen.getByText('Option 9'));
 
-    // Now the submit button should be visible
-    const submitButton = screen.getByText('Submit');
-    expect(submitButton).toBeDefined();
+    // Click submit and wait for the mutation to complete
+    fireEvent.click(screen.getByText('Submit'));
 
-    fireEvent.click(submitButton);
+    // Wait for the score to appear
+    await screen.findByText('You scored 1 out of 5');
 
-    await waitFor(() => {
-      expect(screen.getByText('You scored 1 out of 5')).toBeDefined();
-      expect(screen.getByText('Create a new quiz')).toBeDefined();
-    });
+    // Verify the "Create a new quiz" button appears and works
+    const newQuizButton = screen.getByText('Create a new quiz');
+    expect(newQuizButton).toBeInTheDocument();
 
-    // Test back button
-    fireEvent.click(screen.getByText('Create a new quiz'));
+    fireEvent.click(newQuizButton);
     expect(mockOnBack).toHaveBeenCalled();
   });
 });
