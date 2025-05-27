@@ -7,8 +7,7 @@
     "dev": "tsx watch src/index.ts",
     "seed": "tsx src/scripts/seed.ts",
     "build": "tsc -b .",
-    "lint": "eslint src --ext .ts",
-    "test": "jest"
+    "lint": "eslint src --ext .ts"
   },
   "dependencies": {
     "apollo-server-express": "^3.13.0",

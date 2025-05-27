@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import client from '../../../src/client/apolloClient';
-import { SUBMIT_ANSWERS } from '../../graphql/index.gql';
+import { SUBMIT_ANSWERS } from '../../graphql/index.ts';
 
 interface CorrectAnswer {
   questionId: string;

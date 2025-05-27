@@ -1,8 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { MockedProvider } from '@apollo/client/testing';
 import QuizMaker from '../Quizmaker/Quizmaker';
-import { GET_CATEGORIES } from '../../graphql/index.gql';
+import { GET_CATEGORIES } from '../../graphql/index.ts';
 import { ReduxProvider } from './test-utils';
 
 const mockCategories = [

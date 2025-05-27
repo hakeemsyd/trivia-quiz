@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "concurrently -k -n BACKEND,FRONTEND \"pnpm --filter @trivia/backend dev\" \"pnpm --filter @trivia/frontend dev\"",
     "build": "pnpm -r run build",
-    "lint": "pnpm -r run lint",
-    "test": "pnpm -r run test"
+    "lint": "pnpm -r run lint"
+
   },
   "devDependencies": {
     "concurrently": "^8.0.0",

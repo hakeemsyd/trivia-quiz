@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { describe, it, expect, vi } from 'vitest';
 import Question from '../Question/Question';
-import { GET_QUESTIONS, SUBMIT_ANSWERS } from '../../graphql/index.gql';
+import { GET_QUESTIONS, SUBMIT_ANSWERS } from '../../graphql';
 import { ReduxProvider } from './test-utils';
 
 const mockQuestions = {

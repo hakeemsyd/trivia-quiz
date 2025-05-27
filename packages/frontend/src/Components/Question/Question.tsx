@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import {  useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_QUESTIONS, SUBMIT_ANSWERS } from '../../graphql/index.gql';
+import { GET_QUESTIONS, SUBMIT_ANSWERS } from '../../graphql/index.ts';
 import PrimaryButton from '../Buttons/PrimaryButton';
 
 interface QuestionsProps {

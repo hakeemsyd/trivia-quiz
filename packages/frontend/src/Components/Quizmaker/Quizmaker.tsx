@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_CATEGORIES } from '../../graphql/index.gql';
+import { GET_CATEGORIES } from '../../graphql';
 import Questions from '../Question/Question';
 import PrimaryButton from '../Buttons/PrimaryButton';
 import { PrimarySelect } from '../DropDownSelect/index';

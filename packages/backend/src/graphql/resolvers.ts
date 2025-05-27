@@ -1,5 +1,7 @@
 import { QuestionModel } from '../models/Question';
 import { CategoryModel } from '../models/Category';
+import type { Question } from '../models/Question';
+
 
 export const resolvers = {
   Query: {

@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  // @ts-expect-error: 'test' is a Vitest option, not a Vite option
+
   test: {
     environment: 'jsdom',
     globals: true,
